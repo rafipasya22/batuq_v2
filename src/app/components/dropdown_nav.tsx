@@ -16,9 +16,9 @@ export default function DropdownNav({
   return (
     <div
       className={clsx(
-        "container absolute transform transition-transform duration-500 top-[4.5rem] z-999 h-[40vh] w-[60vw] rounded-[10px] flex flex-col justify-start align-center px-[1rem]",
+        "container fixed left-1/2 -translate-x-1/2 transition-transform duration-500 top-[4rem] z-40 h-[40vh] w-[60vw] rounded-[10px] flex flex-col justify-start items-center px-[1rem]",
         dark ? "bg-black text-white" : "bg-white text-black",
-        hide ? "-translate-y-[60vh]" : "translate-y-0"
+        hide ? "-translate-y-[60vh]" : "translate-y-3"
       )}
     >
       <div className="top w-full h-[5rem] flex flex-row justify-between items-start py-[1rem]">

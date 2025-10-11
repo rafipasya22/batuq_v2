@@ -1,5 +1,7 @@
 import clsx from "clsx";
-import React, { useEffect, useState } from "react";
+
+import React, { ChangeEvent } from "react";
+import { useState, useEffect } from "react";
 
 type NavbarProps = {
   dark: boolean;
@@ -10,59 +12,53 @@ type NavbarProps = {
   closesearch: () => void;
 };
 
+interface FormState {
+  inputValue: string;
+  isInputFilled: boolean;
+}
+
 export default function Navbar({
   dark,
   searchvar,
   activesatu,
   handleclick1,
+  opensearch,
+  closesearch,
 }: NavbarProps) {
-  let [scroll, setscroll] = useState(false);
-  const [cursorTop, setCursorTop] = useState(false);
-  const [delayedHide, setDelayedHide] = useState(false);
+  let haduh: boolean = false;
+  const [formState, setFormState] = useState<FormState>({
+    inputValue: "",
+    isInputFilled: false,
+  });
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value;
+    const isFilled = newValue.trim().length > 0;
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (document.body.style.position === "fixed") return;
-      setscroll(window.scrollY > 100);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    setFormState({
+      inputValue: newValue,
+      isInputFilled: isFilled,
+    });
+  };
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setCursorTop(e.clientY < 100);
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
-
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-
-    if (!cursorTop) {
-      // kursor menjauh dari atas → mulai timer
-      timer = setTimeout(() => setDelayedHide(true), 3000);
-    } else {
-      // kursor kembali ke atas → tampilkan lagi & hapus timer
-      setDelayedHide(false);
-    }
-
-    return () => clearTimeout(timer);
-  }, [cursorTop]);
+  const handleResetInput = () => {
+    setFormState({
+      inputValue: "",
+      isInputFilled: false,
+    });
+    closesearch();
+  };
 
   return (
     <div
       className={clsx(
-        "navbar w-full bg-transparent shadow-none h-[4rem] mt-0 px-[1rem] py-[0.5rem] flex flex-row items-center fixed top-0 left-0 z-50 justify-between"
+        "navbar w-full h-[4rem] mt-0 px-[1rem] py-[0.5rem] flex flex-row items-center justify-between",
+        dark ? "bg-[#161616]" : "bg-white"
       )}
     >
       <div
         className={clsx(
-          "left font-[600] haduh text-[1.5rem] transition-transform duration-500",
-          dark ? "text-[#eec200]" : "text-[#9b00ca]",
-          scroll ? "-translate-y-[60vh]" : "-translate-y-0"
+          "left font-[600] haduh text-[1.5rem]",
+          dark ? "text-[#eec200]" : "text-[#9b00ca]"
         )}
       >
         <span className="text-[1.7rem]">ب</span>atuq
@@ -70,18 +66,9 @@ export default function Navbar({
       <div className="right flex justify-start items-center overflow-x-hidden">
         <div
           className={clsx(
-            "container absolute top-2 right-0 transition-transform duration-500 rounded-l-full flex items-center justify-evenly gap-[0.5rem] px-2 w-[40rem] h-[3rem]",
+            "container absolute top-2 right-2 transition-transform duration-500 rounded-full flex items-center justify-evenly gap-[0.5rem] px-2 w-[40rem] h-[3rem]",
             searchvar ? "-translate-y-[20rem]" : "-translate-y-0",
-            dark ? "bg-black" : "bg-[#e6e6e6]",
-            scroll
-              ? dark 
-               ? !delayedHide
-                ? "-translate-y-0"
-                : "-translate-y-[60vh]"
-              : !delayedHide
-                ? "-translate-y-0"
-                : "-translate-y-[60vh]"
-            : "-translate-y-0"
+            dark ? "bg-black" : "bg-[#e6e6e6]"
           )}
         >
           <div
@@ -139,6 +126,15 @@ export default function Navbar({
               arrow_drop_down
             </span>
           </button>
+          <button
+            className={clsx(
+              "dropdown rounded-full p-[0.5rem] flex items-center text-black justify-center cursor-pointer",
+              dark ? "bg-[#ffd000] text-black hover:text-[#ffd000] hover:bg-[#161616]" : "bg-[#9b00ca] text-white hover:text-[#9b00ca] hover:bg-[#c5c5c5]"
+            )}
+            onClick={opensearch}
+          >
+            <span className="material-symbols-outlined">search</span>
+          </button>
           <div
             className={clsx(
               "Login rounded-full w-[20rem] h-[2rem] flex items-center text-black justify-center gap-[1rem] cursor-pointer",
@@ -162,6 +158,44 @@ export default function Navbar({
             >
               Signup
             </a>
+          </div>
+        </div>
+        <div
+          className={clsx(
+            "container-search border transition-transform duration-500 absolute top-2 right-2 rounded-full flex items-center justify-start gap-[0.5rem] px-2 w-[25rem] h-[3rem]",
+            searchvar ? "-translate-y-0" : "-translate-y-[20rem]",
+            dark
+              ? "bg-black border-black text-white"
+              : "bg-[#e6e6e6] text-black border-[#e6e6e6]"
+          )}
+        >
+          <input
+            className={clsx(
+              "focus:border-transparent outline-none w-[75%] ms-[1rem] placeholder-gray-500"
+            )}
+            type="text"
+            placeholder="Looking for something?"
+            value={formState.inputValue}
+            onChange={handleInputChange}
+          />
+          <div
+            className={clsx(
+              "closesearchbtn rounded-full p-1 flex items-center  cursor-pointer",
+              dark ? "hover:bg-[#161616]" : "hover:bg-[#c5c5c5]"
+            )}
+            onClick={handleResetInput}
+          >
+            <span className="material-symbols-outlined w-[10%]">close</span>
+          </div>
+          <div
+            className={clsx(
+              "searchbtn rounded-full p-1 flex items-center cursor-pointer",
+              dark
+                ? "bg-[#eec200] hover:text-[#eec200] text-[#161616] hover:bg-[#161616]"
+                : "bg-[#9b00ca] hover:text-[#9b00ca] text-[#e6e6e6] hover:bg-[#c5c5c5]"
+            )}
+          >
+            <span className="material-symbols-outlined w-[5%]">search</span>
           </div>
         </div>
       </div>
