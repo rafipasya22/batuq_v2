@@ -4,6 +4,8 @@ import Navbar from "./components/navbar";
 import DropdownNav from "./components/dropdown_nav";
 import Image from "next/image";
 import Link from "next/link";
+import AOS from "aos";
+import "aos/dist/aos.css";
 import clsx from "clsx";
 import { useState, useEffect } from "react";
 
@@ -17,6 +19,13 @@ export default function Home() {
 
   const [scrollStage, setScrollStage] = useState(0);
   const [heroTranslate, setHeroTranslate] = useState(false);
+
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      once: true,
+    });
+  }, []);
 
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
@@ -120,7 +129,7 @@ export default function Home() {
     <div
       className={clsx(
         "main flex flex-col gap-[1rem] h-full items-center justify-start",
-        dark ? "bg-black" : "bg-[#f3f3f3]"
+        dark ? "bg-[#161616]" : "bg-[#f3f3f3]"
       )}
     >
       {activesatu && (
@@ -147,26 +156,51 @@ export default function Home() {
           src="/read.jpeg"
           alt="read"
           fill
-          className="object-cover"
+          className={clsx(
+            "object-cover transition-all duration-700 ease-in-out",
+            scrollStage === 1 && "rounded-b-[20px]"
+          )}
           priority
         />
         <div
           className={clsx(
-            "absolute inset-0 backdrop-blur-sm mix-blend-multiply",
-            !dark ? "bg-[#630081]/80" : "bg-[#997d00]/80"
+            "absolute inset-0 backdrop-blur-0 mix-blend-multiply rounded-b-[20px] transition-all duration-100 ease-in-out",
+            !dark ? "bg-[#a855c2]/70" : "bg-[#c99e28]/70",
+            scrollStage === 1 && "rounded-b-[20px] backdrop-blur-sm"
           )}
         />
-        <div className="absolute w-full flex items-center justify-center">
+        <div
+          className={clsx(
+            "absolute w-full transition-all duration-700 ease-in-out flex items-center rounded-[20px] justify-center",
+            scrollStage === 1 && "rounded-b-[20px]"
+          )}
+        >
           <div
             className={clsx(
-              "absolute text-center text-white transition-transform duration-700 ease-in-out",
+              "flex flex-col justify-center items-center text-center text-white transition-transform duration-700 ease-in-out",
               heroTranslate ? "-translate-y-[100vh]" : "translate-y-0"
             )}
           >
-            <h1 className="text-5xl font-bold mb-4">Selamat Datang</h1>
+            <h1 className="text-5xl font-bold mb-4">
+              Change How You Learn Qur'an
+            </h1>
             <p className="text-lg max-w-xl mx-auto">
-              Jelajahi dunia penuh warna dan pengetahuan baru bersama kami.
+              Learn to read and understand the Qur'an with interactive lessons
+              and expert guidance from anywhere, anytime.
             </p>
+            <button
+              className={clsx(
+                "border mt-[1rem] rounded-[10px] cursor-pointer flex flex-row justify-evenly items-center px-4 py-2 transition-opacity duration-500 ease-in-out",
+                dark
+                  ? "bg-black hover:bg-[#292929] text-[#ffd000] border-black"
+                  : "bg-white hover:bg-[#c5c5c5] text-[#9b00ca] border-white"
+              )}
+            >
+              Get Started
+              <span className="material-symbols-outlined rotate-45 ms-2">
+                arrow_upward
+              </span>
+            </button>
           </div>
 
           <div
@@ -176,36 +210,65 @@ export default function Home() {
             )}
           >
             <div className="left flex flex-col justify-start items-start w-[100%]">
-              <h1 className="text-5xl font-bold mb-4">Batuq</h1>
+              <h1 className="text-5xl font-bold mb-4">Why Choose Us?</h1>
               <p className="text-lg w-[75%]">
-                Batuq adalah platform e-learning Al-Qur’an yang dirancang untuk
-                membantu setiap orang belajar membaca, memahami, dan mengamalkan
-                Al-Qur’an secara lebih mudah dan interaktif. Dengan panduan
-                digital dari pengajar berpengalaman, kamu bisa mempelajari
-                tajwid, makhraj huruf, serta tafsir ayat dengan materi yang
-                tersusun sistematis dan bisa diakses kapan saja, di mana saja.
+                At Batuq, we believe learning the Qur’an should be as inspiring
+                as it is accessible. Our platform combines trusted teaching
+                methods with modern technology to guide you step by step —
+                whether you’re learning to recite, understand, or live by the
+                Qur’an. Each lesson is designed by qualified instructors,
+                enriched with interactive tools, personalized progress tracking,
+                and engaging visual feedback to make your learning journey
+                meaningful and effective. With flexible learning schedules and a
+                supportive online community, Batuq empowers you to connect
+                deeply with the Qur’an — anytime, anywhere.
               </p>
-              <div className="buttons flex flex-row gap-[1rem] justify-start items-start">
-                <button
-                  className={clsx(
-                    "border mt-[1rem] rounded-[10px] cursor-pointer px-4 py-2 transition-opacity duration-500 ease-in-out",
-                    dark
-                      ? "bg-black hover:bg-[#161616] text-[#ffd000] border-black"
-                      : "bg-white hover:bg-[#c5c5c5] text-[#9b00ca] border-white"
-                  )}
-                >
-                  Mulai Belajar
-                </button>
-                <button
-                  className={clsx(
-                    "border mt-[1rem] rounded-[10px] cursor-pointer px-4 py-2 transition-opacity duration-500 ease-in-out",
-                    dark
-                      ? "bg-black hover:bg-[#161616] text-[#ffd000] border-black"
-                      : "bg-white hover:bg-[#c5c5c5] text-[#9b00ca] border-white"
-                  )}
-                >
-                  Lanjut Belajar
-                </button>
+            </div>
+          </div>
+
+          <div
+            className={clsx(
+              "w absolute top-[45vh] transition-all duration-700 ease-in-out flex flex-col justify-center items-center text-center gap-[1rem]",
+              !heroTranslate ? "translate-y-[100vh]" : "translate-x-0"
+            )}
+          >
+            <h1 className="text-3xl font-bold mb-4">What Makes Us Different</h1>
+            <div
+              data-aos="fade-up"
+              className="1st_row containers flex flex-row justify-evenly items-center gap-[5rem]"
+            >
+              <div
+                className={clsx(
+                  "container flex flex-col justify-center items-center rounded-[20px] h-[30vh] w-[25vw] p-[1rem]",
+                  dark
+                    ? "bg-[#eec200] text-[#161616]"
+                    : "bg-[#9b00ca] text-white"
+                )}
+              >
+                <div className="title">w</div>
+                <div className="mid">jjj</div>
+              </div>
+              <div
+                className={clsx(
+                  "container flex flex-col justify-center items-center rounded-[20px] h-[30vh] w-[25vw] p-[1rem]",
+                  dark
+                    ? "bg-[#eec200] text-[#161616]"
+                    : "bg-[#9b00ca] text-white"
+                )}
+              >
+                <div className="title">w</div>
+                <div className="mid">jjj</div>
+              </div>
+              <div
+                className={clsx(
+                  "container flex flex-col justify-center items-center rounded-[20px] h-[30vh] w-[25vw] p-[1rem]",
+                  dark
+                    ? "bg-[#eec200] text-[#161616]"
+                    : "bg-[#9b00ca] text-white"
+                )}
+              >
+                <div className="title">w</div>
+                <div className="mid">jjj</div>
               </div>
             </div>
           </div>
@@ -213,11 +276,335 @@ export default function Home() {
       </div>
       <div
         className={clsx(
-          "top text-red-500 w-full h-[10rem] flex items-center justify-center h-[2rem]",
-          active ? "bg-blue-500" : "bg-gray-300"
+          "learn flex flex-row justify-evenly items-start text-red-500 w-full px-[3rem] h-[80vh] mt-[35vh]",
+          dark ? "bg-[#161616]" : "bg-white"
         )}
       >
-        atas
+        <div
+          data-aos="fade-right"
+          className="left w-[65%] flex flex-col justify-center items-center"
+        >
+          <h1
+            className={clsx(
+              "text-4xl font-bold mb-4",
+              dark ? "text-white" : "text-black"
+            )}
+          >
+            Learn at Your Own Pace
+          </h1>
+          <p
+            className={clsx(
+              "text-lg w-[85%] mb-[2rem]",
+              dark ? "text-[#e0e0e0]" : "text-[#161616]"
+            )}
+          >
+            Our platform is designed to fit your schedule. Whether you have a
+            few minutes or a few hours, you can learn at your own pace with our
+            flexible lessons and resources such as:
+          </p>
+          <div className="materials flex flex-col justify-start items-center gap-[1rem]">
+            <div className="containers">
+              <div className="row-1 flex-row flex justify-evenly items-center gap-[0.5rem]">
+                <div
+                  className={clsx(
+                    "container group cursor-pointer border rounded-[20px] border-[#454545] h-[15vh] w-[15rem] transition-all duration-700 ease p-[1rem] flex flex-col justify-start items-start",
+                    dark ? "hover:border-[#eec200]" : "hover:border-[#9b00ca]"
+                  )}
+                >
+                  <div
+                    className={clsx("top flex flex-row justify-between w-full")}
+                  >
+                    <div
+                      className={clsx(
+                        "title text-xl font-bold",
+                        dark ? "text-[#eec200]" : "text-[#9b00ca]"
+                      )}
+                    >
+                      Tajwid
+                    </div>
+                    <span
+                      className={clsx(
+                        "material-symbols-outlined transition-all duration-700 ease rotate-45 ms-2",
+                        dark
+                          ? "text-white group-hover:text-[#eec200]"
+                          : "text-black group-hover:text-[#9b00ca]"
+                      )}
+                    >
+                      arrow_upward
+                    </span>
+                  </div>
+
+                  <div
+                    className={clsx(
+                      "desc w-full line-clamp-2 hover:underline",
+                      dark ? "text-white" : "text-black"
+                    )}
+                  >
+                    Tajwid is a coawiknma acpwomapwomc aapwcomawpcomawcp
+                    cwpaomcawpawcoiawhjcoiawcnoiawcnmoiawnoiacnioa
+                    aowcnaowicnoaw
+                  </div>
+                </div>
+                <div
+                  className={clsx(
+                    "container group cursor-pointer border rounded-[20px] border-[#454545] h-[15vh] w-[15rem] transition-all duration-700 ease p-[1rem] flex flex-col justify-start items-start",
+                    dark ? "hover:border-[#eec200]" : "hover:border-[#9b00ca]"
+                  )}
+                >
+                  <div
+                    className={clsx("top flex flex-row justify-between w-full")}
+                  >
+                    <div
+                      className={clsx(
+                        "title text-xl font-bold",
+                        dark ? "text-[#eec200]" : "text-[#9b00ca]"
+                      )}
+                    >
+                      Tajwid
+                    </div>
+                    <span
+                      className={clsx(
+                        "material-symbols-outlined transition-all duration-700 ease rotate-45 ms-2",
+                        dark
+                          ? "text-white group-hover:text-[#eec200]"
+                          : "text-black group-hover:text-[#9b00ca]"
+                      )}
+                    >
+                      arrow_upward
+                    </span>
+                  </div>
+
+                  <div
+                    className={clsx(
+                      "desc w-full line-clamp-2 hover:underline",
+                      dark ? "text-white" : "text-black"
+                    )}
+                  >
+                    Tajwid is a coawiknma acpwomapwomc aapwcomawpcomawcp
+                    cwpaomcawpawcoiawhjcoiawcnoiawcnmoiawnoiacnioa
+                    aowcnaowicnoaw
+                  </div>
+                </div>
+              </div>
+              <div className="row-2 flex-row mt-[2rem] flex justify-evenly items-center gap-[0.5rem]">
+                <div
+                  className={clsx(
+                    "container group cursor-pointer border rounded-[20px] border-[#454545] h-[15vh] w-[15rem] transition-all duration-700 ease p-[1rem] flex flex-col justify-start items-start",
+                    dark ? "hover:border-[#eec200]" : "hover:border-[#9b00ca]"
+                  )}
+                >
+                  <div
+                    className={clsx("top flex flex-row justify-between w-full")}
+                  >
+                    <div
+                      className={clsx(
+                        "title text-xl font-bold",
+                        dark ? "text-[#eec200]" : "text-[#9b00ca]"
+                      )}
+                    >
+                      Tajwid
+                    </div>
+                    <span
+                      className={clsx(
+                        "material-symbols-outlined transition-all duration-700 ease rotate-45 ms-2",
+                        dark
+                          ? "text-white group-hover:text-[#eec200]"
+                          : "text-black group-hover:text-[#9b00ca]"
+                      )}
+                    >
+                      arrow_upward
+                    </span>
+                  </div>
+
+                  <div
+                    className={clsx(
+                      "desc w-full line-clamp-2 hover:underline",
+                      dark ? "text-white" : "text-black"
+                    )}
+                  >
+                    Tajwid is a coawiknma acpwomapwomc aapwcomawpcomawcp
+                    cwpaomcawpawcoiawhjcoiawcnoiawcnmoiawnoiacnioa
+                    aowcnaowicnoaw
+                  </div>
+                </div>
+                <div
+                  className={clsx(
+                    "container group cursor-pointer border rounded-[20px] border-[#454545] h-[15vh] w-[15rem] transition-all duration-700 ease p-[1rem] flex flex-col justify-start items-start",
+                    dark ? "hover:border-[#eec200]" : "hover:border-[#9b00ca]"
+                  )}
+                >
+                  <div
+                    className={clsx("top flex flex-row justify-between w-full")}
+                  >
+                    <div
+                      className={clsx(
+                        "title text-xl font-bold",
+                        dark ? "text-[#eec200]" : "text-[#9b00ca]"
+                      )}
+                    >
+                      Tajwid
+                    </div>
+                    <span
+                      className={clsx(
+                        "material-symbols-outlined transition-all duration-700 ease rotate-45 ms-2",
+                        dark
+                          ? "text-white group-hover:text-[#eec200]"
+                          : "text-black group-hover:text-[#9b00ca]"
+                      )}
+                    >
+                      arrow_upward
+                    </span>
+                  </div>
+
+                  <div
+                    className={clsx(
+                      "desc w-full line-clamp-2 hover:underline",
+                      dark ? "text-white" : "text-black"
+                    )}
+                  >
+                    Tajwid is a coawiknma acpwomapwomc aapwcomawpcomawcp
+                    cwpaomcawpawcoiawhjcoiawcnoiawcnmoiawnoiacnioa
+                    aowcnaowicnoaw
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div data-aos="fade-left" className="right w-[35%]">
+          <div
+            className={clsx(
+              "w-[300px] h-[500px] rounded-[20px] flex flex-col justify-center items-center",
+              dark ? "bg-[#eec200]" : "bg-[#9b00ca]"
+            )}
+          >
+            <Image
+              src="/test-nobg.png"
+              alt="learn"
+              width={300}
+              height={500}
+              className="object-cover rounded-[20px]"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        className={clsx(
+          "discuss flex flex-row justify-evenly items-start text-red-500 w-full px-[3rem] h-[80vh] mt-[0.5rem]",
+          dark ? "bg-[#161616]" : "bg-white"
+        )}
+      >
+        <div
+          data-aos="fade-up"
+          className="text-center w-full flex flex-col justify-center items-center"
+        >
+          <h1
+            className={clsx(
+              "text-4xl font-bold mb-4",
+              dark ? "text-white" : "text-black"
+            )}
+          >
+            Discuss with Experts and Peers
+          </h1>
+          <p
+            className={clsx(
+              "text-lg w-[85%] mb-[2rem]",
+              dark ? "text-[#e0e0e0]" : "text-[#161616]"
+            )}
+          >
+            Learning is more effective when you can share ideas and get
+            feedback. Our community features discussion
+            forums, and group projects to help you connect with others and
+            deepen your understanding of the Qur'an. Frequently asked
+            questions include:
+          </p>
+          <div className="materials flex flex-col justify-start items-center gap-[1rem]">
+            <div className="containers">
+              <div className="row-1 flex-col flex justify-evenly items-center gap-[0.5rem]">
+                <div
+                  className={clsx(
+                    "container group cursor-pointer border rounded-[20px] border-[#454545] h-[15vh] w-[70vw] transition-all duration-700 ease p-[1rem] flex flex-col justify-start items-start",
+                    dark ? "hover:border-[#eec200]" : "hover:border-[#9b00ca]"
+                  )}
+                >
+                  <div
+                    className={clsx("top flex flex-row justify-between w-full")}
+                  >
+                    <div
+                      className={clsx(
+                        "title text-xl font-bold",
+                        dark ? "text-[#eec200]" : "text-[#9b00ca]"
+                      )}
+                    >
+                      Tajwid
+                    </div>
+                    <span
+                      className={clsx(
+                        "material-symbols-outlined transition-all duration-700 ease rotate-45 ms-2",
+                        dark
+                          ? "text-white group-hover:text-[#eec200]"
+                          : "text-black group-hover:text-[#9b00ca]"
+                      )}
+                    >
+                      arrow_upward
+                    </span>
+                  </div>
+
+                  <div
+                    className={clsx(
+                      "desc w-full text-start line-clamp-2 hover:underline",
+                      dark ? "text-white" : "text-black"
+                    )}
+                  >
+                    Tajwid is a coawiknma acpwomapwomc aapwcomawpcomawcp
+                    cwpaomcawpawcoiawhjcoiawcnoiawcnmoiawnoiacnioa
+                    aowcnaowicnoaw
+                  </div>
+                </div>
+                <div
+                  className={clsx(
+                    "container group cursor-pointer border rounded-[20px] border-[#454545] h-[15vh] w-[70vw] transition-all duration-700 ease p-[1rem] flex flex-col justify-start items-start",
+                    dark ? "hover:border-[#eec200]" : "hover:border-[#9b00ca]"
+                  )}
+                >
+                  <div
+                    className={clsx("top flex flex-row justify-between w-full")}
+                  >
+                    <div
+                      className={clsx(
+                        "title text-xl font-bold",
+                        dark ? "text-[#eec200]" : "text-[#9b00ca]"
+                      )}
+                    >
+                      Tajwid
+                    </div>
+                    <span
+                      className={clsx(
+                        "material-symbols-outlined transition-all duration-700 ease rotate-45 ms-2",
+                        dark
+                          ? "text-white group-hover:text-[#eec200]"
+                          : "text-black group-hover:text-[#9b00ca]"
+                      )}
+                    >
+                      arrow_upward
+                    </span>
+                  </div>
+
+                  <div
+                    className={clsx(
+                      "desc w-full text-start line-clamp-2 hover:underline",
+                      dark ? "text-white" : "text-black"
+                    )}
+                  >
+                    Tajwid is a coawiknma acpwomapwomc aapwcomawpcomawcp
+                    cwpaomcawpawcoiawhjcoiawcnoiawcnmoiawnoiacnioa
+                    aowcnaowicnoaw
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div
         className={clsx(

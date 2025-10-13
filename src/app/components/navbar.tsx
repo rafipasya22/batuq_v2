@@ -88,7 +88,7 @@ export default function Navbar({
             className={clsx(
               "home rounded-full w-[10rem] h-[2rem] flex items-center justify-center cursor-pointer",
               dark
-                ? "hover:bg-[#161616] text-white bg-black"
+                ? "hover:bg-[#292929] text-white bg-black"
                 : "bg-[#e6e6e6] text-black hover:bg-[#c5c5c5]"
             )}
             onClick={handleclick1}
@@ -99,7 +99,7 @@ export default function Navbar({
             className={clsx(
               "learn rounded-full w-[10rem] h-[2rem] flex items-center justify-center cursor-pointer",
               dark
-                ? "hover:bg-[#161616] text-white bg-black"
+                ? "hover:bg-[#292929] text-white bg-black"
                 : "bg-[#e6e6e6] text-black hover:bg-[#c5c5c5]"
             )}
             onClick={handleclick1}
@@ -110,7 +110,7 @@ export default function Navbar({
             className={clsx(
               "About rounded-full w-[10rem] h-[2rem] flex items-center justify-center cursor-pointer",
               dark
-                ? "hover:bg-[#161616] text-white bg-black"
+                ? "hover:bg-[#292929] text-white bg-black"
                 : "bg-[#e6e6e6] text-black hover:bg-[#c5c5c5]"
             )}
             onClick={handleclick1}
@@ -121,11 +121,11 @@ export default function Navbar({
             className={clsx(
               "dropdown rounded-full w-[10rem] h-[2rem] flex items-center justify-center cursor-pointer",
               activesatu && !dark && "bg-[#c5c5c5] text-black",
-              !activesatu && dark && "bg-black hover:bg-[#161616] text-white",
+              !activesatu && dark && "bg-black hover:bg-[#292929] text-white",
               !activesatu &&
                 !dark &&
                 "bg-[#e6e6e6] hover:bg-[#c5c5c5] text-black",
-              dark && activesatu && "bg-[#161616] text-white"
+              dark && activesatu && "bg-[#292929] text-white"
             )}
             onClick={handleclick1}
           >

@@ -1,13 +1,23 @@
 @import "tailwindcss";
 
 .color_picker{
-  background-color: #9b00ca;
-  color: #eec200;
+  --primary: #9b00ca;
+  --secondary: #eec200;
+  --background: white
+  --background-dark: #262626;
+  --button-dark: #161616;
+  --button-light: #9b00ca;
+  --button-hover-dark: black;
+  --button-hover-light: #630081;
+  --secondary-text-hover: #997d00;
+  --primary-text-hover: #630081;
+  --secondary-inset: #c99e28;
+  --primary-inset: #a855c2;
 }
 
 :root {
   --background: #ffffff;
-  --foreground: #161616;
+  --foreground: #292929;
 }
 
 @theme inline {
@@ -22,7 +32,7 @@
   :root {
     --background: #630081;
     --foreground: #ededed;
-    --hover: #997d00;
+    --hover: #a38b1d;
   }
 }
 
