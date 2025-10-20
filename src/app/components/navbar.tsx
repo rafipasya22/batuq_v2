@@ -8,6 +8,9 @@ type NavbarProps = {
   handleclick1: () => void;
   opensearch: () => void;
   closesearch: () => void;
+  scrollLearn: () => void;
+  scrollHome: () => void;
+  scrolltofaq: () => void;
 };
 
 export default function Navbar({
@@ -15,6 +18,9 @@ export default function Navbar({
   searchvar,
   activesatu,
   handleclick1,
+  scrollLearn,
+  scrollHome,
+  scrolltofaq
 }: NavbarProps) {
   let [scroll, setscroll] = useState(false);
   const [cursorTop, setCursorTop] = useState(false);
@@ -91,7 +97,7 @@ export default function Navbar({
                 ? "hover:bg-[#292929] text-white bg-black"
                 : "bg-[#e6e6e6] text-black hover:bg-[#c5c5c5]"
             )}
-            onClick={handleclick1}
+            onClick={scrollHome}
           >
             Home
           </div>
@@ -102,20 +108,20 @@ export default function Navbar({
                 ? "hover:bg-[#292929] text-white bg-black"
                 : "bg-[#e6e6e6] text-black hover:bg-[#c5c5c5]"
             )}
-            onClick={handleclick1}
+            onClick={scrollLearn}
           >
             Learn
           </div>
           <div
             className={clsx(
-              "About rounded-full w-[10rem] h-[2rem] flex items-center justify-center cursor-pointer",
+              "FAQ rounded-full w-[10rem] h-[2rem] flex items-center justify-center cursor-pointer",
               dark
                 ? "hover:bg-[#292929] text-white bg-black"
                 : "bg-[#e6e6e6] text-black hover:bg-[#c5c5c5]"
             )}
-            onClick={handleclick1}
+            onClick={scrolltofaq}
           >
-            About
+            FAQ
           </div>
           <button
             className={clsx(
