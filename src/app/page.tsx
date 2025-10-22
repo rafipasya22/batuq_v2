@@ -2,6 +2,8 @@
 
 import Navbar from "./components/navbar";
 import DropdownNav from "./components/dropdown_nav";
+import LoginDropdown from "./components/login_dropdown";
+import SignupDropdown from "./components/signup_dropdown";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -20,8 +22,11 @@ export default function Home() {
   let active: boolean = false;
   let dark: boolean = false;
   const [activesatu, setactive1] = useState(false);
+  const [screenkeep, setscreenkeep] = useState(false);
   const [searchvar, setSearch] = useState(false);
   const [hide, hidestate] = useState(true);
+  const [hidelogin, hideloginstate] = useState(true);
+  const [hidesignup, hidesignupstate] = useState(true);
   const [toggleanswer, setToggleanswer] = useState(false);
   const [toggleanswer2, setToggleanswer2] = useState(false);
   const [showButton, setShowButton] = useState(false);
@@ -80,11 +85,75 @@ export default function Home() {
     dark = false;
   }
 
-  function handleclick1() {
-    if (activesatu === true) {
+  function togglelogin() {
+    if (!hidelogin) {
+      hideloginstate(true);
+      setscreenkeep(false);
+    } else if (!hide) {
+      hidestate(true);
       setactive1(false);
+      setTimeout(() => {
+        hideloginstate(false);
+        setscreenkeep(true);
+      }, 300);
+    } else if (!hidesignup) {
+      hidesignupstate(true);
+      setscreenkeep(false);
+      setTimeout(() => {
+        hideloginstate(false);
+        setscreenkeep(true);
+      }, 300);
+    } else {
+      setscreenkeep(true);
+      hideloginstate(false);
+    }
+  }
+
+  function togglesignup() {
+    if (!hidesignup) {
+      hidesignupstate(true);
+      setscreenkeep(false);
+    } else if (!hide) {
+      hidestate(true);
+      setactive1(false);
+      setTimeout(() => {
+        hidesignupstate(false);
+        setscreenkeep(true);
+      }, 300);
+    } else if (!hidelogin) {
+      hideloginstate(true);
+      setscreenkeep(false);
+      setTimeout(() => {
+        hidesignupstate(false);
+        setscreenkeep(true);
+      }, 300);
+    } else {
+      setscreenkeep(true);
+      hidesignupstate(false);
+    }
+  }
+
+  function toggledropdown() {
+    if (!hide) {
+      setactive1(false);
+      hidestate(true);
+    } else if (!hidelogin) {
+      hideloginstate(true);
+      setscreenkeep(false);
+      setTimeout(() => {
+        setactive1(true);
+        hidestate(false);
+      }, 300);
+    } else if (!hidesignup) {
+      hidesignupstate(true);
+      setscreenkeep(false);
+      setTimeout(() => {
+        setactive1(true);
+        hidestate(false);
+      }, 300);
     } else {
       setactive1(true);
+      hidestate(false);
     }
   }
 
@@ -100,18 +169,32 @@ export default function Home() {
     setSearch(false);
   }
 
+  function hideallmenu() {
+    if (!hidelogin) {
+      hideloginstate(true);
+      setscreenkeep(false);
+    } else if (!hidesignup) {
+      hidesignupstate(true);
+      setscreenkeep(false);
+    } else {
+      hidestate(true);
+      setactive1(false);
+    }
+  }
+
   function hidemenu() {
     hidestate(true);
     setactive1(false);
   }
 
-  useEffect(() => {
-    if (activesatu) {
-      hidestate(false);
-    } else {
-      hidestate(true);
-    }
-  }, [activesatu]);
+  function hideloginmenu() {
+    hideloginstate(true);
+    setscreenkeep(false);
+  }
+  function hidesignupmenu() {
+    hidesignupstate(true);
+    setscreenkeep(false);
+  }
 
   function useLockBodyScroll(lock: boolean) {
     useEffect(() => {
@@ -132,7 +215,7 @@ export default function Home() {
     }, [lock]);
   }
 
-  useLockBodyScroll(activesatu);
+  useLockBodyScroll(activesatu || screenkeep);
 
   function scrollHome() {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -181,10 +264,10 @@ export default function Home() {
         dark ? "bg-[#161616]" : "bg-white"
       )}
     >
-      {activesatu && (
+      {(activesatu || screenkeep) && (
         <div
           className="fixed inset-0 bg-black/50 backdrop-blur-sm z-20 transition-all duration-300"
-          onClick={hidemenu}
+          onClick={hideallmenu}
         />
       )}
 
@@ -192,7 +275,9 @@ export default function Home() {
         dark={dark}
         searchvar={searchvar}
         activesatu={activesatu}
-        handleclick1={handleclick1}
+        togglelogin={togglelogin}
+        togglesignup={togglesignup}
+        toggledropdown={toggledropdown}
         opensearch={opensearch}
         closesearch={closesearch}
         scrollLearn={scrollLearn}
@@ -876,7 +961,7 @@ export default function Home() {
         </div>
         <div className="right flex flex-col items-center justify-center">
           <button
-            onClick={getstarted}
+            onClick={togglesignup}
             className={clsx(
               "border mt-[1rem] rounded-[10px] cursor-pointer flex flex-row justify-evenly items-center px-4 py-2 transition-opacity duration-500 ease-in-out",
               dark
@@ -964,9 +1049,7 @@ export default function Home() {
           dark
             ? "border-[#eec200] bg-[#161616] text-[#eec200] hover:bg-black"
             : "border-[#9b00ca] bg-white text-[#9b00ca] hover:bg-[#c5c5c5]",
-          showButton
-            ? "translate-y-0"
-            : "translate-y-[200px]"
+          showButton ? "translate-y-0" : "translate-y-[200px]"
         )}
       >
         {enabled ? (
@@ -976,6 +1059,16 @@ export default function Home() {
         )}
       </button>
       <DropdownNav dark={dark} hide={hide} hidemenu={hidemenu} />
+      <LoginDropdown
+        dark={dark}
+        hidelogin={hidelogin}
+        hideloginmenu={hideloginmenu}
+      />
+      <SignupDropdown
+        dark={dark}
+        hidesignup={hidesignup}
+        hidesignupmenu={hidesignupmenu}
+      />
     </div>
   );
 }

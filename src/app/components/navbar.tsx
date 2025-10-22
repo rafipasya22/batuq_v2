@@ -5,22 +5,26 @@ type NavbarProps = {
   dark: boolean;
   activesatu: boolean;
   searchvar: boolean;
-  handleclick1: () => void;
+  toggledropdown: () => void;
   opensearch: () => void;
   closesearch: () => void;
   scrollLearn: () => void;
   scrollHome: () => void;
   scrolltofaq: () => void;
+  togglesignup: () => void;
+  togglelogin: () => void;
 };
 
 export default function Navbar({
   dark,
   searchvar,
   activesatu,
-  handleclick1,
+  toggledropdown,
   scrollLearn,
   scrollHome,
-  scrolltofaq
+  togglelogin,
+  togglesignup,
+  scrolltofaq,
 }: NavbarProps) {
   let [scroll, setscroll] = useState(false);
   const [cursorTop, setCursorTop] = useState(false);
@@ -80,14 +84,14 @@ export default function Navbar({
             searchvar ? "-translate-y-[20rem]" : "-translate-y-0",
             dark ? "bg-black" : "bg-[#e6e6e6]",
             scroll
-              ? dark 
-               ? !delayedHide
+              ? dark
+                ? !delayedHide
+                  ? "-translate-y-0"
+                  : "-translate-y-[60vh]"
+                : !delayedHide
                 ? "-translate-y-0"
                 : "-translate-y-[60vh]"
-              : !delayedHide
-                ? "-translate-y-0"
-                : "-translate-y-[60vh]"
-            : "-translate-y-0"
+              : "-translate-y-0"
           )}
         >
           <div
@@ -133,7 +137,7 @@ export default function Navbar({
                 "bg-[#e6e6e6] hover:bg-[#c5c5c5] text-black",
               dark && activesatu && "bg-[#292929] text-white"
             )}
-            onClick={handleclick1}
+            onClick={toggledropdown}
           >
             More
             <span
@@ -152,6 +156,7 @@ export default function Navbar({
             )}
           >
             <a
+              onClick={togglelogin}
               className={clsx(
                 "transition-all duration-300 font-[500]",
                 dark ? "hover:text-[#ffd000]" : "hover:text-[#9b00ca]"
@@ -161,6 +166,7 @@ export default function Navbar({
             </a>
             <div className="h-[1.5rem] border-l border-gray-400" />
             <a
+              onClick={togglesignup}
               className={clsx(
                 "transition-all duration-300 font-[500]",
                 dark ? "hover:text-[#ffd000]" : "hover:text-[#9b00ca]"
