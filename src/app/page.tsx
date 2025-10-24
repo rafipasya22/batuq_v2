@@ -21,6 +21,7 @@ export default function Home() {
   const [enabled, setEnabled] = useState(false);
   let active: boolean = false;
   let dark: boolean = false;
+  const [scroll, setscroll] = useState(false);
   const [activesatu, setactive1] = useState(false);
   const [screenkeep, setscreenkeep] = useState(false);
   const [searchvar, setSearch] = useState(false);
@@ -106,6 +107,7 @@ export default function Home() {
     } else {
       setscreenkeep(true);
       hideloginstate(false);
+      setscroll(true);
     }
   }
 
@@ -130,10 +132,12 @@ export default function Home() {
     } else {
       setscreenkeep(true);
       hidesignupstate(false);
+      setscroll(true);
     }
   }
 
   function toggledropdown() {
+    console.log(scroll);
     if (!hide) {
       setactive1(false);
       hidestate(true);
@@ -173,9 +177,11 @@ export default function Home() {
     if (!hidelogin) {
       hideloginstate(true);
       setscreenkeep(false);
+      setscroll(false);
     } else if (!hidesignup) {
       hidesignupstate(true);
       setscreenkeep(false);
+      setscroll(false);
     } else {
       hidestate(true);
       setactive1(false);
@@ -185,15 +191,20 @@ export default function Home() {
   function hidemenu() {
     hidestate(true);
     setactive1(false);
+    if (window.scrollY < 100) {
+      setscroll(false);
+    }
   }
 
   function hideloginmenu() {
     hideloginstate(true);
     setscreenkeep(false);
+    setscroll(false);
   }
   function hidesignupmenu() {
     hidesignupstate(true);
     setscreenkeep(false);
+    setscroll(false);
   }
 
   function useLockBodyScroll(lock: boolean) {
@@ -246,7 +257,7 @@ export default function Home() {
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      const threshold = 150; // area sensitif 150px dari sudut kanan bawah
+      const threshold = 150;
       const isInBottomRight =
         e.clientX > window.innerWidth - threshold &&
         e.clientY > window.innerHeight - threshold;
@@ -256,6 +267,45 @@ export default function Home() {
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (document.body.style.position === "fixed") return;
+      setscroll(window.scrollY > 100);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const [cursorTop, setCursorTop] = useState(false);
+  const [delayedHide, setDelayedHide] = useState(false);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setCursorTop(e.clientY < 100);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
+  useEffect(() => {
+    // PRIORITAS MUTLAK → jika ada menu aktif, NAVBAR DIHIDE dan KUNCI
+    if (screenkeep || activesatu) {
+      setDelayedHide(true);
+      return; // jangan lanjut ke logic cursor
+    }
+
+    // Kalau NAVBAR bebas (tidak dikunci)
+    let timer: NodeJS.Timeout;
+    if (!cursorTop) {
+      timer = setTimeout(() => setDelayedHide(true), 1000);
+    } else {
+      setDelayedHide(false);
+    }
+
+    return () => clearTimeout(timer);
+  }, [cursorTop, screenkeep, activesatu]);
 
   return (
     <div
@@ -277,6 +327,8 @@ export default function Home() {
         activesatu={activesatu}
         togglelogin={togglelogin}
         togglesignup={togglesignup}
+        delayedHide={delayedHide}
+        scroll={scroll}
         toggledropdown={toggledropdown}
         opensearch={opensearch}
         closesearch={closesearch}
@@ -286,7 +338,7 @@ export default function Home() {
       />
       <div
         className={clsx(
-          "relative w-screen h-screen flex flex-col items-center justify-center transition-transform duration-700 ease-in-out"
+          "heroimage relative w-screen h-screen flex flex-col items-center justify-center transition-transform duration-700 ease-in-out"
         )}
       >
         <Image
@@ -318,17 +370,17 @@ export default function Home() {
               heroTranslate ? "-translate-y-[100vh]" : "translate-y-0"
             )}
           >
-            <h1 className="text-5xl font-bold mb-4">
+            <h1 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl xl:text-4xl font-bold mb-4">
               Change How You Learn Qur'an
             </h1>
-            <p className="text-lg max-w-xl mx-auto">
+            <p className="text-sm sm:text-sm md:text-sm lg:text-base xl:text-base max-w-xl mx-auto">
               Learn to read and understand the Qur'an with interactive lessons
               and expert guidance from anywhere, anytime.
             </p>
             <button
               onClick={getstarted}
               className={clsx(
-                "border mt-[1rem] rounded-[10px] cursor-pointer flex flex-row justify-evenly items-center px-4 py-2 transition-opacity duration-500 ease-in-out",
+                "text-sm sm:text-xs md:text-xs lg:text-sm xl:text-sm border mt-[1rem] rounded-[10px] cursor-pointer flex flex-row justify-evenly items-center px-3 py-2 h-fit w-fit transition-opacity duration-500 ease-in-out",
                 dark
                   ? "bg-black hover:bg-[#292929] text-[#ffd000] border-black"
                   : "bg-white hover:bg-[#c5c5c5] text-[#9b00ca] border-white"
@@ -348,8 +400,10 @@ export default function Home() {
             )}
           >
             <div className="left flex flex-col justify-start items-start w-[100%]">
-              <h1 className="text-5xl font-bold mb-4">Why Choose Us?</h1>
-              <p className="text-lg w-[75%]">
+              <h1 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl xl:text-4xl font-bold mb-4">
+                Why Choose Us?
+              </h1>
+              <p className="text-xs sm:text-xs md:text-xs lg:text-sm xl:text-base w-[75%]">
                 At Batuq, we believe learning the Qur’an should be as inspiring
                 as it is accessible. Our platform combines trusted teaching
                 methods with modern technology to guide you step by step —
@@ -370,7 +424,9 @@ export default function Home() {
               !heroTranslate ? "translate-y-[100vh]" : "translate-x-0"
             )}
           >
-            <h1 className="text-3xl font-bold mb-4">What Makes Us Different</h1>
+            <h1 className="text-xl sm:text-xl md:text-xl lg:text-2xl xl:text-3xl font-bold mb-4">
+              What Makes Us Different
+            </h1>
             <div
               data-aos="fade-up"
               className="1st_row containers flex flex-row justify-evenly items-center gap-[5rem]"
@@ -415,7 +471,7 @@ export default function Home() {
       <div
         id="learn"
         className={clsx(
-          "learn flex flex-row justify-evenly items-start text-red-500 w-full px-[3rem] h-fit mt-[35vh]",
+          "learn flex flex-row justify-evenly items-start text-red-500 w-full px-[5rem] h-fit mt-[40vh]",
           dark ? "bg-[#161616]" : "bg-white"
         )}
       >
@@ -425,7 +481,7 @@ export default function Home() {
         >
           <h1
             className={clsx(
-              "text-4xl font-bold mb-4",
+              "text-xl sm:text-xl md:text-xl lg:text-2xl xl:text-3xl font-bold mb-4",
               dark ? "text-white" : "text-black"
             )}
           >
@@ -433,7 +489,7 @@ export default function Home() {
           </h1>
           <p
             className={clsx(
-              "text-lg w-[85%] mb-[2rem]",
+              "text-xs sm:text-xs md:text-xs lg:text-sm xl:text-base w-[85%] mb-[2rem]",
               dark ? "text-[#e0e0e0]" : "text-[#161616]"
             )}
           >
@@ -444,168 +500,98 @@ export default function Home() {
           <div className="materials flex flex-col justify-start items-center gap-[1rem]">
             <div className="containers">
               <div className="row-1 flex-row flex justify-evenly items-center gap-[0.5rem]">
-                <div
-                  className={clsx(
-                    "container group cursor-pointer border rounded-[20px] border-[#454545] h-[15vh] w-[15rem] transition-all duration-700 ease p-[1rem] flex flex-col justify-start items-start hover:translate-y-[-5px] hover:shadow-lg",
-                    dark ? "hover:border-[#eec200]" : "hover:border-[#9b00ca]"
-                  )}
-                >
+                {Array.from({ length: 2 }).map((_, i) => (
                   <div
-                    className={clsx("top flex flex-row justify-between w-full")}
+                    key={i}
+                    className={clsx(
+                      "container group cursor-pointer border rounded-[20px] border-[#454545] h-fit max-h-[20vh] w-[15rem] transition-all duration-700 ease p-[1rem] flex flex-col justify-start items-start hover:translate-y-[-5px] hover:shadow-lg",
+                      dark ? "hover:border-[#eec200]" : "hover:border-[#9b00ca]"
+                    )}
                   >
                     <div
                       className={clsx(
-                        "title text-xl font-bold",
-                        dark ? "text-[#eec200]" : "text-[#9b00ca]"
+                        "top flex flex-row justify-between w-full"
                       )}
                     >
-                      Tajwid
+                      <div
+                        className={clsx(
+                          "title text-sm sm:text-sm md:text-sm lg:text-base xl:text-base font-bold",
+                          dark ? "text-[#eec200]" : "text-[#9b00ca]"
+                        )}
+                      >
+                        Tajwid
+                      </div>
+                      <span
+                        className={clsx(
+                          "material-symbols-outlined transition-all duration-700 ease rotate-45 ms-2",
+                          dark
+                            ? "text-white group-hover:text-[#eec200]"
+                            : "text-black group-hover:text-[#9b00ca]"
+                        )}
+                      >
+                        arrow_upward
+                      </span>
                     </div>
-                    <span
-                      className={clsx(
-                        "material-symbols-outlined transition-all duration-700 ease rotate-45 ms-2",
-                        dark
-                          ? "text-white group-hover:text-[#eec200]"
-                          : "text-black group-hover:text-[#9b00ca]"
-                      )}
-                    >
-                      arrow_upward
-                    </span>
-                  </div>
 
-                  <div
-                    className={clsx(
-                      "desc w-full line-clamp-2 hover:underline",
-                      dark ? "text-white" : "text-black"
-                    )}
-                  >
-                    Tajwid is a coawiknma acpwomapwomc aapwcomawpcomawcp
-                    cwpaomcawpawcoiawhjcoiawcnoiawcnmoiawnoiacnioa
-                    aowcnaowicnoaw
-                  </div>
-                </div>
-                <div
-                  className={clsx(
-                    "container group cursor-pointer border rounded-[20px] border-[#454545] h-[15vh] w-[15rem] transition-all duration-700 ease p-[1rem] flex flex-col justify-start items-start hover:translate-y-[-5px] hover:shadow-lg",
-                    dark ? "hover:border-[#eec200]" : "hover:border-[#9b00ca]"
-                  )}
-                >
-                  <div
-                    className={clsx("top flex flex-row justify-between w-full")}
-                  >
                     <div
                       className={clsx(
-                        "title text-xl font-bold",
-                        dark ? "text-[#eec200]" : "text-[#9b00ca]"
+                        "desc text-xs sm:text-xs md:text-xs lg:text-sm xl:text-sm w-full line-clamp-2 hover:underline",
+                        dark ? "text-white" : "text-black"
                       )}
                     >
-                      Tajwid
+                      Tajwid is a coawiknma acpwomapwomc aapwcomawpcomawcp
+                      cwpaomcawpawcoiawhjcoiawcnoiawcnmoiawnoiacnioa
+                      aowcnaowicnoaw
                     </div>
-                    <span
-                      className={clsx(
-                        "material-symbols-outlined transition-all duration-700 ease rotate-45 ms-2",
-                        dark
-                          ? "text-white group-hover:text-[#eec200]"
-                          : "text-black group-hover:text-[#9b00ca]"
-                      )}
-                    >
-                      arrow_upward
-                    </span>
                   </div>
-
-                  <div
-                    className={clsx(
-                      "desc w-full line-clamp-2 hover:underline",
-                      dark ? "text-white" : "text-black"
-                    )}
-                  >
-                    Tajwid is a coawiknma acpwomapwomc aapwcomawpcomawcp
-                    cwpaomcawpawcoiawhjcoiawcnoiawcnmoiawnoiacnioa
-                    aowcnaowicnoaw
-                  </div>
-                </div>
+                ))}
               </div>
               <div className="row-2 flex-row mt-[2rem] flex justify-evenly items-center gap-[0.5rem]">
-                <div
-                  className={clsx(
-                    "container group cursor-pointer border rounded-[20px] border-[#454545] h-[15vh] w-[15rem] transition-all duration-700 ease p-[1rem] flex flex-col justify-start items-start hover:translate-y-[-5px] hover:shadow-lg",
-                    dark ? "hover:border-[#eec200]" : "hover:border-[#9b00ca]"
-                  )}
-                >
+                {Array.from({ length: 2 }).map((_, i) => (
                   <div
-                    className={clsx("top flex flex-row justify-between w-full")}
+                    key={i}
+                    className={clsx(
+                      "container group cursor-pointer border rounded-[20px] border-[#454545] h-fit max-h-[20vh] w-[15rem] transition-all duration-700 ease p-[1rem] flex flex-col justify-start items-start hover:translate-y-[-5px] hover:shadow-lg",
+                      dark ? "hover:border-[#eec200]" : "hover:border-[#9b00ca]"
+                    )}
                   >
                     <div
                       className={clsx(
-                        "title text-xl font-bold",
-                        dark ? "text-[#eec200]" : "text-[#9b00ca]"
+                        "top flex flex-row justify-between w-full"
                       )}
                     >
-                      Tajwid
+                      <div
+                        className={clsx(
+                          "title text-sm sm:text-sm md:text-sm lg:text-base xl:text-base font-bold",
+                          dark ? "text-[#eec200]" : "text-[#9b00ca]"
+                        )}
+                      >
+                        Tajwid
+                      </div>
+                      <span
+                        className={clsx(
+                          "material-symbols-outlined transition-all duration-700 ease rotate-45 ms-2",
+                          dark
+                            ? "text-white group-hover:text-[#eec200]"
+                            : "text-black group-hover:text-[#9b00ca]"
+                        )}
+                      >
+                        arrow_upward
+                      </span>
                     </div>
-                    <span
-                      className={clsx(
-                        "material-symbols-outlined transition-all duration-700 ease rotate-45 ms-2",
-                        dark
-                          ? "text-white group-hover:text-[#eec200]"
-                          : "text-black group-hover:text-[#9b00ca]"
-                      )}
-                    >
-                      arrow_upward
-                    </span>
-                  </div>
 
-                  <div
-                    className={clsx(
-                      "desc w-full line-clamp-2 hover:underline",
-                      dark ? "text-white" : "text-black"
-                    )}
-                  >
-                    Tajwid is a coawiknma acpwomapwomc aapwcomawpcomawcp
-                    cwpaomcawpawcoiawhjcoiawcnoiawcnmoiawnoiacnioa
-                    aowcnaowicnoaw
-                  </div>
-                </div>
-                <div
-                  className={clsx(
-                    "container group cursor-pointer border rounded-[20px] border-[#454545] h-[15vh] w-[15rem] transition-all duration-700 ease p-[1rem] flex flex-col justify-start items-start hover:translate-y-[-5px] hover:shadow-lg",
-                    dark ? "hover:border-[#eec200]" : "hover:border-[#9b00ca]"
-                  )}
-                >
-                  <div
-                    className={clsx("top flex flex-row justify-between w-full")}
-                  >
                     <div
                       className={clsx(
-                        "title text-xl font-bold",
-                        dark ? "text-[#eec200]" : "text-[#9b00ca]"
+                        "desc text-xs sm:text-xs md:text-xs lg:text-sm xl:text-sm w-full line-clamp-2 hover:underline",
+                        dark ? "text-white" : "text-black"
                       )}
                     >
-                      Tajwid
+                      Tajwid is a coawiknma acpwomapwomc aapwcomawpcomawcp
+                      cwpaomcawpawcoiawhjcoiawcnoiawcnmoiawnoiacnioa
+                      aowcnaowicnoaw
                     </div>
-                    <span
-                      className={clsx(
-                        "material-symbols-outlined transition-all duration-700 ease rotate-45 ms-2",
-                        dark
-                          ? "text-white group-hover:text-[#eec200]"
-                          : "text-black group-hover:text-[#9b00ca]"
-                      )}
-                    >
-                      arrow_upward
-                    </span>
                   </div>
-
-                  <div
-                    className={clsx(
-                      "desc w-full line-clamp-2 hover:underline",
-                      dark ? "text-white" : "text-black"
-                    )}
-                  >
-                    Tajwid is a coawiknma acpwomapwomc aapwcomawpcomawcp
-                    cwpaomcawpawcoiawhjcoiawcnoiawcnmoiawnoiacnioa
-                    aowcnaowicnoaw
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
@@ -613,15 +599,15 @@ export default function Home() {
         <div data-aos="fade-left" className="right w-[35%]">
           <div
             className={clsx(
-              "w-[300px] h-[500px] rounded-[20px] flex flex-col justify-center items-center",
+              "w-[250px] py-[1rem] h-[400px] rounded-[20px] mt-[2rem] flex flex-col justify-center items-center",
               dark ? "bg-[#eec200]" : "bg-[#9b00ca]"
             )}
           >
             <Image
               src="/test-nobg.png"
               alt="learn"
-              width={300}
-              height={500}
+              width={200}
+              height={400}
               className="object-cover rounded-[20px]"
             />
           </div>
@@ -630,7 +616,7 @@ export default function Home() {
       <div
         id="faq"
         className={clsx(
-          "discuss flex flex-row justify-evenly items-start text-red-500 w-full px-[3rem] h-fit my-[4rem]",
+          "discuss flex flex-row justify-evenly items-start text-red-500 w-full px-[5rem] h-fit my-[7rem]",
           dark ? "bg-[#161616]" : "bg-white"
         )}
       >
@@ -640,7 +626,7 @@ export default function Home() {
         >
           <h1
             className={clsx(
-              "text-4xl font-bold mb-4",
+              "text-xl sm:text-xl md:text-xl lg:text-2xl xl:text-3xl font-bold mb-4",
               dark ? "text-white" : "text-black"
             )}
           >
@@ -648,7 +634,7 @@ export default function Home() {
           </h1>
           <p
             className={clsx(
-              "text-lg w-[85%] mb-[2rem]",
+              "text-xs sm:text-xs md:text-xs lg:text-sm xl:text-base w-[85%] mb-[2rem]",
               dark ? "text-[#e0e0e0]" : "text-[#161616]"
             )}
           >
@@ -664,7 +650,7 @@ export default function Home() {
                   <button
                     onClick={() => setToggleanswer(!toggleanswer)}
                     className={clsx(
-                      "container group relative cursor-pointer z-10 border rounded-[20px] border-[#454545] h-[10vh] w-[70vw] transition-all duration-700 ease p-[1rem] flex flex-col justify-center items-center  hover:translate-y-[-5px] hover:shadow-lg",
+                      "container group relative cursor-pointer z-10 border rounded-[20px] border-[#454545] h-[7vh] w-[70vw] transition-all duration-700 ease p-[1rem] flex flex-col justify-center items-center  hover:translate-y-[-5px] hover:shadow-lg",
                       dark
                         ? "hover:border-[#eec200] bg-[#161616]"
                         : "hover:border-[#9b00ca] bg-white"
@@ -677,7 +663,7 @@ export default function Home() {
                     >
                       <div
                         className={clsx(
-                          "title text-xl font-bold",
+                          "title text-base font-bold",
                           dark ? "text-[#eec200]" : "text-[#9b00ca]"
                         )}
                       >
@@ -701,8 +687,8 @@ export default function Home() {
                       "ans z-9 absolute top-0 left-0 w-[70vw] transition-all duration-700 ease pt-[1.5rem] flex flex-row justify-center items-center text-white",
                       dark ? "bg-[#eec200]" : "bg-[#9b00ca]",
                       toggleanswer
-                        ? "translate-y-[5vh] rounded-b-[20px] h-[15vh] "
-                        : "rounded-[20px] h-[10vh]"
+                        ? "translate-y-[3vh] rounded-b-[20px] h-[15vh] "
+                        : "rounded-[20px] h-[7vh]"
                     )}
                   >
                     wwww
@@ -713,7 +699,7 @@ export default function Home() {
                   <button
                     onClick={() => setToggleanswer2(!toggleanswer2)}
                     className={clsx(
-                      "containerw group cursor-pointer relative z-10 border rounded-[20px] border-[#454545] h-[10vh] w-[70vw] transition-all duration-700 ease p-[1rem] flex flex-col justify-center items-center hover:shadow-lg",
+                      "containerw group cursor-pointer relative z-10 border rounded-[20px] border-[#454545] h-[7vh] w-[70vw] transition-all duration-700 ease p-[1rem] flex flex-col justify-center items-center hover:shadow-lg",
                       dark
                         ? "hover:border-[#eec200] bg-[#161616]"
                         : "hover:border-[#9b00ca] bg-white",
@@ -738,7 +724,7 @@ export default function Home() {
                     >
                       <div
                         className={clsx(
-                          "title text-xl font-bold",
+                          "title text-base font-bold",
                           dark ? "text-[#eec200]" : "text-[#9b00ca]"
                         )}
                       >
@@ -763,19 +749,19 @@ export default function Home() {
                       dark ? "bg-[#eec200]" : "bg-[#9b00ca]",
                       toggleanswer &&
                         toggleanswer2 &&
-                        "translate-y-[15vh] h-[15vh] rounded-b-[20px]",
+                        "translate-y-[13vh] h-[15vh] rounded-b-[20px]",
 
                       toggleanswer &&
                         !toggleanswer2 &&
-                        "translate-y-[10vh] h-[10vh] rounded-[20px]",
+                        "translate-y-[10vh] h-[7vh] rounded-[20px]",
 
                       toggleanswer2 &&
                         !toggleanswer &&
-                        "translate-y-[5vh] h-[15vh] rounded-b-[20px] mb-[5vh]",
+                        "translate-y-[3vh] h-[15vh] rounded-b-[20px] mb-[4vh]",
 
                       !toggleanswer &&
                         !toggleanswer2 &&
-                        "h-[10vh] rounded-[20px]"
+                        "h-[7vh] rounded-[20px]"
                     )}
                   >
                     wwwwwa
@@ -788,7 +774,7 @@ export default function Home() {
       </div>
       <div
         className={clsx(
-          "learn flex flex-row justify-evenly items-start text-red-500 w-full px-[3rem] h-fit mb-[5rem] transition-all duration-700 ease",
+          "learn flex flex-row justify-evenly items-start text-red-500 w-full px-[3rem] h-fit mb-[4rem] transition-all duration-700 ease",
           dark ? "bg-[#161616]" : "bg-white"
         )}
       >
@@ -798,7 +784,7 @@ export default function Home() {
         >
           <h1
             className={clsx(
-              "text-4xl font-bold mb-4",
+              "text-xl sm:text-xl md:text-xl lg:text-2xl xl:text-3xl font-bold mb-4",
               dark ? "text-white" : "text-black"
             )}
           >
@@ -806,7 +792,7 @@ export default function Home() {
           </h1>
           <p
             className={clsx(
-              "text-lg w-[85%] mb-[2rem]",
+              "text-xs sm:text-xs md:text-xs lg:text-sm xl:text-sm w-[85%] mb-[2rem]",
               dark ? "text-[#e0e0e0]" : "text-[#161616]"
             )}
           >
@@ -818,127 +804,94 @@ export default function Home() {
             <div className="containers">
               <div className="row-1 flex-row flex justify-evenly items-center gap-[0.5rem]">
                 <div
-                  className={clsx(
-                    "container group cursor-pointer border rounded-[20px] border-[#454545] h-[15vh] w-[15rem] transition-all duration-700 ease p-[1rem] flex flex-col justify-start items-start hover:translate-y-[-5px] hover:shadow-lg",
-                    dark ? "hover:border-[#eec200]" : "hover:border-[#9b00ca]"
-                  )}
-                >
-                  <div
-                    className={clsx("top flex flex-row justify-between w-full")}
+                    className={clsx(
+                      "container group cursor-pointer border rounded-[20px] border-[#454545] h-fit max-h-[20vh] w-[15rem] transition-all duration-700 ease p-[1rem] flex flex-col justify-start items-start hover:translate-y-[-5px] hover:shadow-lg",
+                      dark ? "hover:border-[#eec200]" : "hover:border-[#9b00ca]"
+                    )}
                   >
                     <div
                       className={clsx(
-                        "title text-xl font-bold",
-                        dark ? "text-[#eec200]" : "text-[#9b00ca]"
+                        "top flex flex-row justify-between w-full"
                       )}
                     >
-                      Tajwid
+                      <div
+                        className={clsx(
+                          "title text-sm sm:text-sm md:text-sm lg:text-base xl:text-base font-bold",
+                          dark ? "text-[#eec200]" : "text-[#9b00ca]"
+                        )}
+                      >
+                        Tajwid
+                      </div>
+                      <span
+                        className={clsx(
+                          "material-symbols-outlined transition-all duration-700 ease rotate-45 ms-2",
+                          dark
+                            ? "text-white group-hover:text-[#eec200]"
+                            : "text-black group-hover:text-[#9b00ca]"
+                        )}
+                      >
+                        arrow_upward
+                      </span>
                     </div>
-                    <span
+
+                    <div
                       className={clsx(
-                        "material-symbols-outlined transition-all duration-700 ease rotate-45 ms-2",
-                        dark
-                          ? "text-white group-hover:text-[#eec200]"
-                          : "text-black group-hover:text-[#9b00ca]"
+                        "desc text-xs sm:text-xs md:text-xs lg:text-sm xl:text-sm w-full line-clamp-2 hover:underline",
+                        dark ? "text-white" : "text-black"
                       )}
                     >
-                      arrow_upward
-                    </span>
+                      Tajwid is a coawiknma acpwomapwomc aapwcomawpcomawcp
+                      cwpaomcawpawcoiawhjcoiawcnoiawcnmoiawnoiacnioa
+                      aowcnaowicnoaw
+                    </div>
                   </div>
-
-                  <div
-                    className={clsx(
-                      "desc w-full line-clamp-2 hover:underline",
-                      dark ? "text-white" : "text-black"
-                    )}
-                  >
-                    Tajwid is a coawiknma acpwomapwomc aapwcomawpcomawcp
-                    cwpaomcawpawcoiawhjcoiawcnoiawcnmoiawnoiacnioa
-                    aowcnaowicnoaw
-                  </div>
-                </div>
               </div>
               <div className="row-2 flex-row mt-[2rem] flex justify-evenly items-center gap-[0.5rem]">
-                <div
-                  className={clsx(
-                    "container group cursor-pointer border rounded-[20px] border-[#454545] h-[15vh] w-[15rem] transition-all duration-700 ease p-[1rem] flex flex-col justify-start items-start hover:translate-y-[-5px] hover:shadow-lg",
-                    dark ? "hover:border-[#eec200]" : "hover:border-[#9b00ca]"
-                  )}
-                >
+                {Array.from({ length: 2 }).map((_, i) => (
                   <div
-                    className={clsx("top flex flex-row justify-between w-full")}
+                    key={i}
+                    className={clsx(
+                      "container group cursor-pointer border rounded-[20px] border-[#454545] h-fit max-h-[20vh] w-[15rem] transition-all duration-700 ease p-[1rem] flex flex-col justify-start items-start hover:translate-y-[-5px] hover:shadow-lg",
+                      dark ? "hover:border-[#eec200]" : "hover:border-[#9b00ca]"
+                    )}
                   >
                     <div
                       className={clsx(
-                        "title text-xl font-bold",
-                        dark ? "text-[#eec200]" : "text-[#9b00ca]"
+                        "top flex flex-row justify-between w-full"
                       )}
                     >
-                      Tajwid
+                      <div
+                        className={clsx(
+                          "title text-sm sm:text-sm md:text-sm lg:text-base xl:text-base font-bold",
+                          dark ? "text-[#eec200]" : "text-[#9b00ca]"
+                        )}
+                      >
+                        Tajwid
+                      </div>
+                      <span
+                        className={clsx(
+                          "material-symbols-outlined transition-all duration-700 ease rotate-45 ms-2",
+                          dark
+                            ? "text-white group-hover:text-[#eec200]"
+                            : "text-black group-hover:text-[#9b00ca]"
+                        )}
+                      >
+                        arrow_upward
+                      </span>
                     </div>
-                    <span
-                      className={clsx(
-                        "material-symbols-outlined transition-all duration-700 ease rotate-45 ms-2",
-                        dark
-                          ? "text-white group-hover:text-[#eec200]"
-                          : "text-black group-hover:text-[#9b00ca]"
-                      )}
-                    >
-                      arrow_upward
-                    </span>
-                  </div>
 
-                  <div
-                    className={clsx(
-                      "desc w-full line-clamp-2 hover:underline",
-                      dark ? "text-white" : "text-black"
-                    )}
-                  >
-                    Tajwid is a coawiknma acpwomapwomc aapwcomawpcomawcp
-                    cwpaomcawpawcoiawhjcoiawcnoiawcnmoiawnoiacnioa
-                    aowcnaowicnoaw
-                  </div>
-                </div>
-                <div
-                  className={clsx(
-                    "container group cursor-pointer border rounded-[20px] border-[#454545] h-[15vh] w-[15rem] transition-all duration-700 ease p-[1rem] flex flex-col justify-start items-start hover:translate-y-[-5px] hover:shadow-lg",
-                    dark ? "hover:border-[#eec200]" : "hover:border-[#9b00ca]"
-                  )}
-                >
-                  <div
-                    className={clsx("top flex flex-row justify-between w-full")}
-                  >
                     <div
                       className={clsx(
-                        "title text-xl font-bold",
-                        dark ? "text-[#eec200]" : "text-[#9b00ca]"
+                        "desc text-xs sm:text-xs md:text-xs lg:text-sm xl:text-sm w-full line-clamp-2 hover:underline",
+                        dark ? "text-white" : "text-black"
                       )}
                     >
-                      Tajwid
+                      Tajwid is a coawiknma acpwomapwomc aapwcomawpcomawcp
+                      cwpaomcawpawcoiawhjcoiawcnoiawcnmoiawnoiacnioa
+                      aowcnaowicnoaw
                     </div>
-                    <span
-                      className={clsx(
-                        "material-symbols-outlined transition-all duration-700 ease rotate-45 ms-2",
-                        dark
-                          ? "text-white group-hover:text-[#eec200]"
-                          : "text-black group-hover:text-[#9b00ca]"
-                      )}
-                    >
-                      arrow_upward
-                    </span>
                   </div>
-
-                  <div
-                    className={clsx(
-                      "desc w-full line-clamp-2 hover:underline",
-                      dark ? "text-white" : "text-black"
-                    )}
-                  >
-                    Tajwid is a coawiknma acpwomapwomc aapwcomawpcomawcp
-                    cwpaomcawpawcoiawhjcoiawcnoiawcnmoiawnoiacnioa
-                    aowcnaowicnoaw
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
@@ -951,15 +904,15 @@ export default function Home() {
         )}
       >
         <div className="left flex flex-col justify-start items-start w-[65%] h-full gap-[1rem]">
-          <div className="text-blue text-2xl font-bold">
+          <div className="text-xl sm:text-xl md:text-xl lg:text-2xl xl:text-2xl font-bold">
             Join us and start your Qur'an learning journey today!
           </div>
-          <div className="text-m font-medium line-clamp-3">
+          <div className="text-xs sm:text-xs md:text-xs lg:text-sm xl:text-sm line-clamp-3">
             Sign up now and gain access to our comprehensive Qur'an learning
             resources, expert instructors, and supportive community.
           </div>
         </div>
-        <div className="right flex flex-col items-center justify-center">
+        <div className="right text-xs sm:text-xs md:text-xs lg:text-sm xl:text-sm flex flex-col items-center justify-center">
           <button
             onClick={togglesignup}
             className={clsx(
@@ -969,7 +922,7 @@ export default function Home() {
                 : "bg-white hover:bg-[#c5c5c5] text-[#9b00ca] border-white"
             )}
           >
-            Get Started
+            Start Now!
             <span className="material-symbols-outlined rotate-45 ms-2">
               arrow_upward
             </span>
@@ -1006,14 +959,14 @@ export default function Home() {
             dark ? "text-black" : "text-white"
           )}
         >
-          <div className="title text-xl font-bold">Explore</div>
+          <div className="title text-base font-bold">Explore</div>
           <div className="isi flex flex-row justify-start items-start gap-[2rem]">
-            <ul>
+            <ul className="text-sm">
               <li className="mb-2 cursor-pointer hover:underline">Home</li>
               <li className="mb-2 cursor-pointer hover:underline">Learn</li>
               <li className="mb-2 cursor-pointer hover:underline">Discuss</li>
             </ul>
-            <ul>
+            <ul className="text-sm">
               <li className="mb-2 cursor-pointer hover:underline">FAQ</li>
               <li className="mb-2 cursor-pointer hover:underline">
                 Contact Us
@@ -1062,7 +1015,7 @@ export default function Home() {
       <LoginDropdown
         dark={dark}
         hidelogin={hidelogin}
-        hideloginmenu={hideloginmenu}
+        togglesignup={togglesignup}
       />
       <SignupDropdown
         dark={dark}

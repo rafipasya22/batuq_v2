@@ -5,6 +5,8 @@ type NavbarProps = {
   dark: boolean;
   activesatu: boolean;
   searchvar: boolean;
+  scroll: boolean;
+  delayedHide: boolean;
   toggledropdown: () => void;
   opensearch: () => void;
   closesearch: () => void;
@@ -25,43 +27,9 @@ export default function Navbar({
   togglelogin,
   togglesignup,
   scrolltofaq,
+  delayedHide,
+  scroll,
 }: NavbarProps) {
-  let [scroll, setscroll] = useState(false);
-  const [cursorTop, setCursorTop] = useState(false);
-  const [delayedHide, setDelayedHide] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (document.body.style.position === "fixed") return;
-      setscroll(window.scrollY > 100);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setCursorTop(e.clientY < 100);
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
-
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-
-    if (!cursorTop) {
-      // kursor menjauh dari atas → mulai timer
-      timer = setTimeout(() => setDelayedHide(true), 3000);
-    } else {
-      // kursor kembali ke atas → tampilkan lagi & hapus timer
-      setDelayedHide(false);
-    }
-
-    return () => clearTimeout(timer);
-  }, [cursorTop]);
-
   return (
     <div
       className={clsx(
@@ -80,13 +48,13 @@ export default function Navbar({
       <div className="right flex justify-start items-center overflow-x-hidden">
         <div
           className={clsx(
-            "container absolute top-2 right-0 transition-transform duration-500 rounded-l-full flex items-center justify-evenly gap-[0.5rem] px-2 w-[40rem] h-[3rem]",
+            "container absolute top-2 right-0 transition-transform duration-500 rounded-l-full flex items-center justify-evenly gap-1 w-fit px-[1rem] h-fit py-[0.3rem]",
             searchvar ? "-translate-y-[20rem]" : "-translate-y-0",
             dark ? "bg-black" : "bg-[#e6e6e6]",
             scroll
               ? dark
                 ? !delayedHide
-                  ? "-translate-y-0"
+                  ? "-translate-y-[60vh]"
                   : "-translate-y-[60vh]"
                 : !delayedHide
                 ? "-translate-y-0"
@@ -96,7 +64,7 @@ export default function Navbar({
         >
           <div
             className={clsx(
-              "home rounded-full w-[10rem] h-[2rem] flex items-center justify-center cursor-pointer",
+              "home text-xs sm:text-xs md:text-xs lg:text-sm xl:text-sm rounded-full w-fit w-max-[10rem] h-fit h-max-[2rem] px-[1rem] py-[0.3rem] flex items-center justify-center cursor-pointer",
               dark
                 ? "hover:bg-[#292929] text-white bg-black"
                 : "bg-[#e6e6e6] text-black hover:bg-[#c5c5c5]"
@@ -107,7 +75,7 @@ export default function Navbar({
           </div>
           <div
             className={clsx(
-              "learn rounded-full w-[10rem] h-[2rem] flex items-center justify-center cursor-pointer",
+              "learn rounded-full text-xs sm:text-xs md:text-xs lg:text-sm xl:text-sm rounded-full w-fit w-max-[10rem] h-fit h-max-[2rem] px-[1rem] py-[0.3rem] flex items-center justify-center cursor-pointer",
               dark
                 ? "hover:bg-[#292929] text-white bg-black"
                 : "bg-[#e6e6e6] text-black hover:bg-[#c5c5c5]"
@@ -118,7 +86,7 @@ export default function Navbar({
           </div>
           <div
             className={clsx(
-              "FAQ rounded-full w-[10rem] h-[2rem] flex items-center justify-center cursor-pointer",
+              "FAQ rounded-full text-xs sm:text-xs md:text-xs lg:text-sm xl:text-sm rounded-full w-fit w-max-[10rem] h-fit h-max-[2rem] px-[1rem] py-[0.3rem] flex items-center justify-center cursor-pointer",
               dark
                 ? "hover:bg-[#292929] text-white bg-black"
                 : "bg-[#e6e6e6] text-black hover:bg-[#c5c5c5]"
@@ -129,7 +97,7 @@ export default function Navbar({
           </div>
           <button
             className={clsx(
-              "dropdown rounded-full w-[10rem] h-[2rem] flex items-center justify-center cursor-pointer",
+              "dropdown rounded-full text-xs sm:text-xs md:text-xs lg:text-sm xl:text-sm rounded-full w-fit w-max-[10rem] h-fit h-max-[2rem] px-[1rem] py-[0.25rem] flex items-center justify-center cursor-pointer",
               activesatu && !dark && "bg-[#c5c5c5] text-black",
               !activesatu && dark && "bg-black hover:bg-[#292929] text-white",
               !activesatu &&
@@ -151,7 +119,7 @@ export default function Navbar({
           </button>
           <div
             className={clsx(
-              "Login rounded-full w-[20rem] h-[2rem] flex items-center text-black justify-center gap-[1rem] cursor-pointer",
+              "Login rounded-full text-xs sm:text-xs md:text-xs lg:text-sm xl:text-sm rounded-full w-fit w-max-[10rem] h-fit h-max-[2rem] px-[1rem] py-[0.3rem] flex items-center text-black justify-center gap-[1rem] cursor-pointer",
               dark ? "bg-[#161616] text-white" : "bg-white text-black"
             )}
           >
