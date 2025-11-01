@@ -11,11 +11,18 @@ import {
   faFacebook,
   faInstagram,
 } from "@fortawesome/free-brands-svg-icons";
+
+import {
+  faBookQuran,
+  faComments,
+  faLaptopFile,
+} from "@fortawesome/free-solid-svg-icons";
 import { faMoon, faSun } from "@fortawesome/free-regular-svg-icons";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import clsx from "clsx";
 import { useState, useEffect } from "react";
+import RotatingText from "./components/RotatingText";
 
 export default function Home() {
   const [enabled, setEnabled] = useState(false);
@@ -370,9 +377,31 @@ export default function Home() {
               heroTranslate ? "-translate-y-[100vh]" : "translate-y-0"
             )}
           >
-            <h1 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl xl:text-4xl font-bold mb-4">
-              Change How You Learn Qur'an
-            </h1>
+            <div className="maintitle flex flex-row justify-start items-center gap-3 mb-5 w-fit">
+              <div
+                className={clsx(
+                  "leftTitle text-2xl sm:text-3xl md:text-3xl lg:text-4xl xl:text-4xl font-bold text-white"
+                )}
+              >
+                Change how you learn
+              </div>
+              <RotatingText
+                texts={["Tajwid", "Irab", "Tafsir", "Qur'an"]}
+                mainClassName={clsx(
+                  "text-2xl sm:text-3xl md:text-3xl lg:text-4xl xl:text-4xl font-bold px-4 sm:px-2 md:px-3 w-[9rem] overflow-hidden py-0.5 sm:py-1 md:py-2 justify-center rounded-lg",
+                  dark ? "bg-black text-[#eec200]" : "bg-white text-[#9b00ca]"
+                )}
+                staggerFrom={"last"}
+                initial={{ y: "100%" }}
+                animate={{ y: 0 }}
+                exit={{ y: "-120%" }}
+                staggerDuration={0.025}
+                splitLevelClassName="overflow-hidden pb-0.5 sm:pb-1 md:pb-1"
+                transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                rotationInterval={2000}
+              />
+            </div>
+
             <p className="text-sm sm:text-sm md:text-sm lg:text-base xl:text-base max-w-xl mx-auto">
               Learn to read and understand the Qur'an with interactive lessons
               and expert guidance from anywhere, anytime.
@@ -433,36 +462,74 @@ export default function Home() {
             >
               <div
                 className={clsx(
-                  "container flex flex-col justify-center items-center rounded-[20px] h-[30vh] w-[25vw] p-[1rem]",
+                  "container flex flex-col justify-start items-center rounded-[20px] h-[30vh] w-[25vw] py-[2rem] px-[1rem]",
                   dark
                     ? "bg-[#eec200] text-[#161616]"
                     : "bg-[#9b00ca] text-white"
                 )}
               >
-                <div className="title">w</div>
-                <div className="mid">jjj</div>
+                <div
+                  className={clsx(
+                    "icon h-fit w-fit rounded-[10px] p-[0.5rem] text-lg sm:text-lg md:text-lg lg:text-xl xl:text-2xl mb-[1rem]",
+                    dark ? "bg-[#eec200] " : "bg-white text-[#9b00ca]"
+                  )}
+                >
+                  <FontAwesomeIcon icon={faBookQuran} size="xl" />
+                </div>
+                <div className="title font-bold text-base sm:text-base md:text-base lg:text-base xl:text-base">
+                  Learn at your own pace
+                </div>
+                <div className="mid text-xs sm:text-xs md:text-xs lg:text-xs xl:text-xs mt-[0.1rem]">
+                  At batuq, you can learn the Quran from anytime, anywhere
+                </div>
               </div>
               <div
                 className={clsx(
-                  "container flex flex-col justify-center items-center rounded-[20px] h-[30vh] w-[25vw] p-[1rem]",
+                  "container flex flex-col justify-start items-center rounded-[20px] h-[30vh] w-[25vw] py-[2rem] px-[1rem]",
                   dark
                     ? "bg-[#eec200] text-[#161616]"
                     : "bg-[#9b00ca] text-white"
                 )}
               >
-                <div className="title">w</div>
-                <div className="mid">jjj</div>
+                <div
+                  className={clsx(
+                    "icon h-fit w-fit rounded-[10px] p-[0.5rem] text-lg sm:text-lg md:text-lg lg:text-xl xl:text-2xl mb-[1rem]",
+                    dark ? "bg-[#eec200] " : "bg-white text-[#9b00ca]"
+                  )}
+                >
+                  <FontAwesomeIcon icon={faComments} size="xl" />
+                </div>
+                <div className="title font-bold text-base sm:text-base md:text-base lg:text-base xl:text-base">
+                  Discuss with experts and peers
+                </div>
+                <div className="mid text-xs sm:text-xs md:text-xs lg:text-xs xl:text-xs mt-[0.1rem]">
+                  At batuq, you can share your opinion, knowledge or ask for
+                  them in the forum!
+                </div>
               </div>
               <div
                 className={clsx(
-                  "container flex flex-col justify-center items-center rounded-[20px] h-[30vh] w-[25vw] p-[1rem]",
+                  "container flex flex-col justify-start items-center rounded-[20px] h-[30vh] w-[25vw] py-[2rem] px-[1rem]",
                   dark
                     ? "bg-[#eec200] text-[#161616]"
                     : "bg-[#9b00ca] text-white"
                 )}
               >
-                <div className="title">w</div>
-                <div className="mid">jjj</div>
+                <div
+                  className={clsx(
+                    "icon h-fit w-fit rounded-[10px] p-[0.5rem] text-lg sm:text-lg md:text-lg lg:text-xl xl:text-2xl mb-[1rem]",
+                    dark ? "bg-[#eec200] " : "bg-white text-[#9b00ca]"
+                  )}
+                >
+                  <FontAwesomeIcon icon={faLaptopFile} size="xl" />
+                </div>
+                <div className="title font-bold text-base sm:text-base md:text-base lg:text-base xl:text-base">
+                  Learn through a variety of materials
+                </div>
+                <div className="mid text-xs sm:text-xs md:text-xs lg:text-xs xl:text-xs mt-[0.1rem]">
+                  At batuq, you can learn through a variety of materials such as
+                  videos, documents and more!
+                </div>
               </div>
             </div>
           </div>
@@ -788,63 +855,62 @@ export default function Home() {
               dark ? "text-white" : "text-black"
             )}
           >
-            Learn at Your Own Pace
+            Learn through a variety of materials
           </h1>
           <p
             className={clsx(
-              "text-xs sm:text-xs md:text-xs lg:text-sm xl:text-sm w-[85%] mb-[2rem]",
+              "text-xs sm:text-xs md:text-xs lg:text-sm xl:text-base w-[85%] mb-[2rem] text-center",
               dark ? "text-[#e0e0e0]" : "text-[#161616]"
             )}
           >
-            Our platform is designed to fit your schedule. Whether you have a
-            few minutes or a few hours, you can learn at your own pace with our
-            flexible lessons and resources such as:
+            At our platform, you can learn through bunch of different materials
+            such as videos, documents, or even a conference call with the
+            experts. We also provide a lot of exercises for you to hone your
+            skills in reading the Quran. What we prepared for you includes:
           </p>
           <div className="materials flex flex-col justify-start items-center gap-[1rem]">
             <div className="containers">
               <div className="row-1 flex-row flex justify-evenly items-center gap-[0.5rem]">
                 <div
-                    className={clsx(
-                      "container group cursor-pointer border rounded-[20px] border-[#454545] h-fit max-h-[20vh] w-[15rem] transition-all duration-700 ease p-[1rem] flex flex-col justify-start items-start hover:translate-y-[-5px] hover:shadow-lg",
-                      dark ? "hover:border-[#eec200]" : "hover:border-[#9b00ca]"
-                    )}
+                  className={clsx(
+                    "container group cursor-pointer border rounded-[20px] border-[#454545] h-fit max-h-[20vh] w-[15rem] transition-all duration-700 ease p-[1rem] flex flex-col justify-start items-start hover:translate-y-[-5px] hover:shadow-lg",
+                    dark ? "hover:border-[#eec200]" : "hover:border-[#9b00ca]"
+                  )}
+                >
+                  <div
+                    className={clsx("top flex flex-row justify-between w-full")}
                   >
                     <div
                       className={clsx(
-                        "top flex flex-row justify-between w-full"
+                        "title text-sm sm:text-sm md:text-sm lg:text-base xl:text-base font-bold",
+                        dark ? "text-[#eec200]" : "text-[#9b00ca]"
                       )}
                     >
-                      <div
-                        className={clsx(
-                          "title text-sm sm:text-sm md:text-sm lg:text-base xl:text-base font-bold",
-                          dark ? "text-[#eec200]" : "text-[#9b00ca]"
-                        )}
-                      >
-                        Tajwid
-                      </div>
-                      <span
-                        className={clsx(
-                          "material-symbols-outlined transition-all duration-700 ease rotate-45 ms-2",
-                          dark
-                            ? "text-white group-hover:text-[#eec200]"
-                            : "text-black group-hover:text-[#9b00ca]"
-                        )}
-                      >
-                        arrow_upward
-                      </span>
+                      Tajwid
                     </div>
-
-                    <div
+                    <span
                       className={clsx(
-                        "desc text-xs sm:text-xs md:text-xs lg:text-sm xl:text-sm w-full line-clamp-2 hover:underline",
-                        dark ? "text-white" : "text-black"
+                        "material-symbols-outlined transition-all duration-700 ease rotate-45 ms-2",
+                        dark
+                          ? "text-white group-hover:text-[#eec200]"
+                          : "text-black group-hover:text-[#9b00ca]"
                       )}
                     >
-                      Tajwid is a coawiknma acpwomapwomc aapwcomawpcomawcp
-                      cwpaomcawpawcoiawhjcoiawcnoiawcnmoiawnoiacnioa
-                      aowcnaowicnoaw
-                    </div>
+                      arrow_upward
+                    </span>
                   </div>
+
+                  <div
+                    className={clsx(
+                      "desc text-xs sm:text-xs md:text-xs lg:text-sm xl:text-sm w-full line-clamp-2 hover:underline",
+                      dark ? "text-white" : "text-black"
+                    )}
+                  >
+                    Tajwid is a coawiknma acpwomapwomc aapwcomawpcomawcp
+                    cwpaomcawpawcoiawhjcoiawcnoiawcnmoiawnoiacnioa
+                    aowcnaowicnoaw
+                  </div>
+                </div>
               </div>
               <div className="row-2 flex-row mt-[2rem] flex justify-evenly items-center gap-[0.5rem]">
                 {Array.from({ length: 2 }).map((_, i) => (
@@ -1020,7 +1086,7 @@ export default function Home() {
       <SignupDropdown
         dark={dark}
         hidesignup={hidesignup}
-        hidesignupmenu={hidesignupmenu}
+        togglelogin={togglelogin}
       />
     </div>
   );

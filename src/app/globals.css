@@ -16,7 +16,7 @@
 }
 
 :root {
-  --background: #ffffff;
+  --background: #ddddddff;
   --foreground: #292929;
 }
 
@@ -45,6 +45,15 @@ body {
 
 body::-webkit-scrollbar {
   display: none;
+}
+
+notification-contents::-webkit-scrollbar{
+  display: none;
+}
+
+.material-symbols-outlined {
+  font-size: inherit !important;
+  line-height: 1 !important;
 }
 
 .haduh{
